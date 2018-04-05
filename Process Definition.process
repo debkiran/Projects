@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <pd:name>Process Definition.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>132</pd:startX>
+    <pd:startY>90</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>476</pd:endX>
+    <pd:endY>89</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1456470292473</pd:targetNamespace>
+    <pd:activity name="Java Code">
+        <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+        <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+        <pd:x>288</pd:x>
+        <pd:y>93</pd:y>
+        <config>
+            <fullsource>package ProcessDefinition;
+import java.util.*;
+import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+
+public class ProcessDefinitionJavaCode{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected int response = 0;
+	public int getresponse() {
+		return response;
+	}
+	public void setresponse(int val) {
+		response = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	public ProcessDefinitionJavaCode() {
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	Out : int response
+* Available Variables: DO NOT MODIFY *****/
+int responseCode;
+
+
+String urlToConnect = "http://nbttest1.superpages.com:9013/ugcwiki/PhotosServlet";
+File fileToUpload = new File("C:\\test.jpg");
+String boundary = Long.toHexString(System.currentTimeMillis()); // Just generate some unique random value.
+
+URLConnection connection = new URL(urlToConnect).openConnection();
+connection.setDoOutput(true); // This sets request method to POST.
+connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+PrintWriter writer = null;
+String content = "ABC";
+try {
+    writer = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()));
+	
+
+
+    writer.println("--" + boundary);
+    writer.println("Content-Disposition: form-data; name=\"picture\"; filename=\"test.jpg\"");
+    writer.println("Content-Type: image/jpeg");
+    writer.println();
+    BufferedReader reader = null;
+    try {
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileToUpload)));
+        for (String line; (line = reader.readLine()) != null;) {
+            writer.println(line);
+        }
+    } finally {
+        if (reader != null) try { reader.close(); } catch (IOException logOrIgnore) {}
+    }
+    writer.println("--" + boundary + "--");
+} finally {
+    if (writer != null) writer.close();
+    
+    
+
+
+
+}
+ responseCode = ((HttpURLConnection) connection).getResponseCode();
+System.out.println(responseCode); // Should be 200
+response=responseCode;
+}
+}
+</fullsource>
+            <fileName>ProcessDefinitionJavaCode</fileName>
+            <packageName>ProcessDefinition</packageName>
+            <outputData>
+                <row>
+                    <fieldName>response</fieldName>
+                    <fieldType>int</fieldType>
+                    <fieldRequired>optional</fieldRequired>
+                </row>
+            </outputData>
+            <inputData/>
+            <byteCode>
+                <class>
+                    <name>ProcessDefinitionJavaCode</name>
+                    <byteCode>yv66vgAAADMAmQkALQBHCgAuAEgIAEkHAEoIAEsKAAQATAoATQBOCgBPAFAHAFEKAAkATAoACQBSCgBTAFQIAFUHAFYKAA4ASAgAVwoADgBYCgAOAFkKAFMAWggAWwcAXAcAXQoAUwBeCgAWAF8KABUAYAgAYQoAFQBiCABjCABkCgAVAGUHAGYHAGcHAGgKACEAaQoAIABqCgAfAGsKAB8AbAoAHwBtBwBuCgAVAG0HAG8KACkAcAkATQBxCgByAHMHAHQHAHUBAAhyZXNwb25zZQEAAUkBAAtnZXRyZXNwb25zZQEAAygpSQEABENvZGUBAA9MaW5lTnVtYmVyVGFibGUBAAtzZXRyZXNwb25zZQEABChJKVYBAAY8aW5pdD4BAAMoKVYBAAZpbnZva2UBAA1TdGFja01hcFRhYmxlBwB0BwB2BwBKBwB3BwBcBwBmBwBuBwB4AQAKRXhjZXB0aW9ucwcAeQEAClNvdXJjZUZpbGUBAB5Qcm9jZXNzRGVmaW5pdGlvbkphdmFDb2RlLmphdmEMAC8AMAwANwA4AQA5aHR0cDovL25idHRlc3QxLnN1cGVycGFnZXMuY29tOjkwMTMvdWdjd2lraS9QaG90b3NTZXJ2bGV0AQAMamF2YS9pby9GaWxlAQALQzpcdGVzdC5qcGcMADcAegcAewwAfAB9BwB+DAB/AIABAAxqYXZhL25ldC9VUkwMAIEAggcAdwwAgwCEAQAMQ29udGVudC1UeXBlAQAXamF2YS9sYW5nL1N0cmluZ0J1aWxkZXIBAB5tdWx0aXBhcnQvZm9ybS1kYXRhOyBib3VuZGFyeT0MAIUAhgwAhwCIDACJAIoBAANBQkMBABNqYXZhL2lvL1ByaW50V3JpdGVyAQAaamF2YS9pby9PdXRwdXRTdHJlYW1Xcml0ZXIMAIsAjAwANwCNDAA3AI4BAAItLQwAjwB6AQBDQ29udGVudC1EaXNwb3NpdGlvbjogZm9ybS1kYXRhOyBuYW1lPSJwaWN0dXJlIjsgZmlsZW5hbWU9InRlc3QuanBnIgEAGENvbnRlbnQtVHlwZTogaW1hZ2UvanBlZwwAjwA4AQAWamF2YS9pby9CdWZmZXJlZFJlYWRlcgEAGWphdmEvaW8vSW5wdXRTdHJlYW1SZWFkZXIBABdqYXZhL2lvL0ZpbGVJbnB1dFN0cmVhbQwANwCQDAA3AJEMADcAkgwAkwCIDACUADgBABNqYXZhL2lvL0lPRXhjZXB0aW9uAQAaamF2YS9uZXQvSHR0cFVSTENvbm5lY3Rpb24MAJUAMgwAlgCXBwCYDACPADYBACtQcm9jZXNzRGVmaW5pdGlvbi9Qcm9jZXNzRGVmaW5pdGlvbkphdmFDb2RlAQAQamF2YS9sYW5nL09iamVjdAEAEGphdmEvbGFuZy9TdHJpbmcBABZqYXZhL25ldC9VUkxDb25uZWN0aW9uAQATamF2YS9sYW5nL1Rocm93YWJsZQEAE2phdmEvbGFuZy9FeGNlcHRpb24BABUoTGphdmEvbGFuZy9TdHJpbmc7KVYBABBqYXZhL2xhbmcvU3lzdGVtAQARY3VycmVudFRpbWVNaWxsaXMBAAMoKUoBAA5qYXZhL2xhbmcvTG9uZwEAC3RvSGV4U3RyaW5nAQAVKEopTGphdmEvbGFuZy9TdHJpbmc7AQAOb3BlbkNvbm5lY3Rpb24BABooKUxqYXZhL25ldC9VUkxDb25uZWN0aW9uOwEAC3NldERvT3V0cHV0AQAEKFopVgEABmFwcGVuZAEALShMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9TdHJpbmdCdWlsZGVyOwEACHRvU3RyaW5nAQAUKClMamF2YS9sYW5nL1N0cmluZzsBABJzZXRSZXF1ZXN0UHJvcGVydHkBACcoTGphdmEvbGFuZy9TdHJpbmc7TGphdmEvbGFuZy9TdHJpbmc7KVYBAA9nZXRPdXRwdXRTdHJlYW0BABgoKUxqYXZhL2lvL091dHB1dFN0cmVhbTsBABkoTGphdmEvaW8vT3V0cHV0U3RyZWFtOylWAQATKExqYXZhL2lvL1dyaXRlcjspVgEAB3ByaW50bG4BABEoTGphdmEvaW8vRmlsZTspVgEAGChMamF2YS9pby9JbnB1dFN0cmVhbTspVgEAEyhMamF2YS9pby9SZWFkZXI7KVYBAAhyZWFkTGluZQEABWNsb3NlAQAPZ2V0UmVzcG9uc2VDb2RlAQADb3V0AQAVTGphdmEvaW8vUHJpbnRTdHJlYW07AQATamF2YS9pby9QcmludFN0cmVhbQAhAC0ALgAAAAEABAAvADAAAAAEAAEAMQAyAAEAMwAAAB0AAQABAAAABSq0AAGsAAAAAQA0AAAABgABAAAAEwABADUANgABADMAAAAiAAIAAgAAAAYqG7UAAbEAAAABADQAAAAKAAIAAAAWAAUAFwABADcAOAABADMAAAAqAAIAAQAAAAoqtwACKgO1AAGxAAAAAQA0AAAADgADAAAAGQAEABEACQAaAAEAOQA4AAIAMwAAApIABwANAAABMRIDTbsABFkSBbcABk64AAe4AAg6BLsACVkstwAKtgALOgUZBQS2AAwZBRINuwAOWbcADxIQtgARGQS2ABG2ABK2ABMBOgYSFDoHuwAVWbsAFlkZBbYAF7cAGLcAGToGGQa7AA5ZtwAPEhq2ABEZBLYAEbYAErYAGxkGEhy2ABsZBhIdtgAbGQa2AB4BOgi7AB9ZuwAgWbsAIVkttwAitwAjtwAkOggZCLYAJVk6CcYADRkGGQm2ABun/+4ZCMYAJBkItgAmpwAcOgmnABc6ChkIxgANGQi2ACanAAU6CxkKvxkGuwAOWbcADxIatgARGQS2ABESGrYAEbYAErYAGxkGxgAaGQa2ACinABI6DBkGxgAIGQa2ACgZDL8ZBcAAKbYAKjyyACsbtgAsKhu1AAGxAAYAwADFAMgAJwCOALsAzQAAANQA2QDcACcAzQDPAM0AAABKAP8BDAAAAQwBDgEMAAAAAgA0AAAAYgAYAAAAIgADACMADQAkABUAJgAiACcAKAAoAEMAKQBGACoASgAsAF8AMAB4ADEAfwAyAIYAMwCLADQAjgA2AKYANwCxADgAuwA7AOEAPQD/AD8BGwBGASQARwErAEgBMABJADoAAAC3AAr/AKYACQcAOwAHADwHAD0HADwHAD4HAD8HADwHAEAAABRMBwBBRAcAQv8ADgALBwA7AAcAPAcAPQcAPAcAPgcAPwcAPAcAQAAHAEIAAQcAQQH5AAL/ACoACAcAOwAHADwHAD0HADwHAD4HAD8HADwAAQcAQv8ACwANBwA7AAcAPAcAPQcAPAcAPgcAPwcAPAAAAAAHAEIAAP8AAgAIBwA7AAcAPAcAPQcAPAcAPgcAPwcAPAAAAEMAAAAEAAEARAABAEUAAAACAEY=</byteCode>
+                </class>
+            </byteCode>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Java Code</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Java Code</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>
